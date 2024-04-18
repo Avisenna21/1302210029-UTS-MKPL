@@ -31,14 +31,21 @@ public class TaxFunction {
             numberOfChildren = MAX_CHILDREN_FOR_EXEMPTION;
         }
         
+        int totalIncome = (monthlySalary + otherMonthlyIncome) * numberOfMonthWorking;
+        int taxExemptAmount = calculateTaxExemptAmount(isMarried, numberOfChildren);
+        int taxableIncome = totalIncome - deductible - taxExemptAmount;
+
+        tax = (int) Math.round(TAX_RATE * taxableIncome);
+        
+        return Math.max(tax, 0); // Ensure tax is not negative
+    }
+
+    private static int calculateTaxExemptAmount(boolean isMarried, int numberOfChildren) {
         int taxExemptAmount = BASE_EXEMPTION_AMOUNT;
         if (isMarried) {
             taxExemptAmount += MARRIED_EXEMPTION_AMOUNT;
         }
         taxExemptAmount += numberOfChildren * PER_CHILD_EXEMPTION_AMOUNT;
-
-        tax = (int) Math.round(TAX_RATE * (((monthlySalary + otherMonthlyIncome) * numberOfMonthWorking) - deductible - taxExemptAmount));
-        
-        return Math.max(tax, 0); // Ensure tax is not negative
+        return taxExemptAmount;
     }
 }
