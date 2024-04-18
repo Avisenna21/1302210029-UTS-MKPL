@@ -4,10 +4,6 @@ public class TaxFunction {
 
     private static final int MAX_MONTHS_WORKING = 12;
     private static final int MAX_CHILDREN_FOR_EXEMPTION = 3;
-    private static final int BASE_EXEMPTION_AMOUNT = 54000000;
-    private static final int MARRIED_EXEMPTION_AMOUNT = 4500000;
-    private static final int PER_CHILD_EXEMPTION_AMOUNT = 1500000;
-    private static final double TAX_RATE = 0.05;
 
     /**
      * Fungsi untuk menghitung jumlah pajak penghasilan pegawai yang harus dibayarkan setahun.
@@ -25,27 +21,29 @@ public class TaxFunction {
         
         if (numberOfMonthWorking > MAX_MONTHS_WORKING) {
             System.err.println("More than 12 month working per year");
+            return tax;
         }
         
         if (numberOfChildren > MAX_CHILDREN_FOR_EXEMPTION) {
             numberOfChildren = MAX_CHILDREN_FOR_EXEMPTION;
         }
-        
-        int totalIncome = (monthlySalary + otherMonthlyIncome) * numberOfMonthWorking;
+
         int taxExemptAmount = calculateTaxExemptAmount(isMarried, numberOfChildren);
+
+        int totalIncome = (monthlySalary + otherMonthlyIncome) * numberOfMonthWorking;
         int taxableIncome = totalIncome - deductible - taxExemptAmount;
 
-        tax = (int) Math.round(TAX_RATE * taxableIncome);
+        tax = (int) Math.round(0.05 * taxableIncome);
         
         return Math.max(tax, 0); // Ensure tax is not negative
     }
 
     private static int calculateTaxExemptAmount(boolean isMarried, int numberOfChildren) {
-        int taxExemptAmount = BASE_EXEMPTION_AMOUNT;
+        int taxExemptAmount = 54000000;
         if (isMarried) {
-            taxExemptAmount += MARRIED_EXEMPTION_AMOUNT;
+            taxExemptAmount += 4500000;
         }
-        taxExemptAmount += numberOfChildren * PER_CHILD_EXEMPTION_AMOUNT;
+        taxExemptAmount += numberOfChildren * 1500000;
         return taxExemptAmount;
     }
 }
