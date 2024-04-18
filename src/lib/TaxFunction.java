@@ -18,9 +18,7 @@ public class TaxFunction {
      */
     
     public static int calculateTax(int monthlySalary, int otherMonthlyIncome, int numberOfMonthWorking, int deductible, boolean isMarried, int numberOfChildren) {
-        if (numberOfMonthWorking > MAX_MONTHS_WORKING) {
-            throw new IllegalArgumentException("More than 12 month working per year");
-        }
+        validateNumberOfMonths(numberOfMonthWorking);
         
         if (numberOfChildren > MAX_CHILDREN_FOR_EXEMPTION) {
             numberOfChildren = MAX_CHILDREN_FOR_EXEMPTION;
@@ -34,6 +32,12 @@ public class TaxFunction {
         int tax = (int) Math.round(0.05 * taxableIncome);
         
         return Math.max(tax, 0); // Ensure tax is not negative
+    }
+
+    private static void validateNumberOfMonths(int numberOfMonthWorking) {
+        if (numberOfMonthWorking > MAX_MONTHS_WORKING) {
+            throw new IllegalArgumentException("More than 12 month working per year");
+        }
     }
 
     private static int calculateTaxExemptAmount(boolean isMarried, int numberOfChildren) {
