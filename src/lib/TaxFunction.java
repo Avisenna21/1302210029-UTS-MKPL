@@ -20,11 +20,9 @@ public class TaxFunction {
     public static int calculateTax(int monthlySalary, int otherMonthlyIncome, int numberOfMonthWorking, int deductible, boolean isMarried, int numberOfChildren) {
         validateNumberOfMonths(numberOfMonthWorking);
         
-        if (numberOfChildren > MAX_CHILDREN_FOR_EXEMPTION) {
-            numberOfChildren = MAX_CHILDREN_FOR_EXEMPTION;
-        }
-
-        int taxExemptAmount = calculateTaxExemptAmount(isMarried, numberOfChildren);
+        int adjustedChildrenCount = adjustChildrenCount(numberOfChildren);
+        
+        int taxExemptAmount = calculateTaxExemptAmount(isMarried, adjustedChildrenCount);
 
         int totalIncome = (monthlySalary + otherMonthlyIncome) * numberOfMonthWorking;
         int taxableIncome = totalIncome - deductible - taxExemptAmount;
@@ -37,6 +35,14 @@ public class TaxFunction {
     private static void validateNumberOfMonths(int numberOfMonthWorking) {
         if (numberOfMonthWorking > MAX_MONTHS_WORKING) {
             throw new IllegalArgumentException("More than 12 month working per year");
+        }
+    }
+
+    private static int adjustChildrenCount(int numberOfChildren) {
+        if (numberOfChildren > MAX_CHILDREN_FOR_EXEMPTION) {
+            return MAX_CHILDREN_FOR_EXEMPTION;
+        } else {
+            return numberOfChildren;
         }
     }
 
