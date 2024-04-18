@@ -1,54 +1,44 @@
 package lib;
 
 public class TaxFunction {
-    private int monthlySalary;
-    private int otherMonthlyIncome;
-    private int numberOfMonthsWorking;
-    private int deductible;
-    private boolean isMarried;
-    private int numberOfChildren;
 
-    public TaxFunction(int monthlySalary, int otherMonthlyIncome, int numberOfMonthsWorking, int deductible, boolean isMarried, int numberOfChildren) {
-        this.monthlySalary = monthlySalary;
-        this.otherMonthlyIncome = otherMonthlyIncome;
-        this.numberOfMonthsWorking = numberOfMonthsWorking;
-        this.deductible = deductible;
-        this.isMarried = isMarried;
-        this.numberOfChildren = numberOfChildren;
-    }
-
-    // Getters and setters omitted for brevity
+    private static final int MAX_MONTHS_WORKING = 12;
+    private static final int MAX_CHILDREN_FOR_EXEMPTION = 3;
+    private static final int BASE_EXEMPTION_AMOUNT = 54000000;
+    private static final int MARRIED_EXEMPTION_AMOUNT = 4500000;
+    private static final int PER_CHILD_EXEMPTION_AMOUNT = 1500000;
+    private static final double TAX_RATE = 0.05;
 
     /**
-     * Method to calculate the annual income tax amount an employee should pay.
+     * Fungsi untuk menghitung jumlah pajak penghasilan pegawai yang harus dibayarkan setahun.
      * 
-     * The tax is calculated as 5% of the annual net income (monthly salary and other monthly income multiplied by number of months worked minus deductible) minus the tax exempt income.
+     * Pajak dihitung sebagai 5% dari penghasilan bersih tahunan (gaji dan pemasukan bulanan lainnya dikalikan jumlah bulan bekerja dikurangi pemotongan) dikurangi penghasilan tidak kena pajak.
      * 
-     * If the employee is unmarried and has no children, the tax exempt income is Rp 54,000,000.
-     * If the employee is married, the tax exempt income is increased by Rp 4,500,000.
-     * If the employee has children, the tax exempt income is increased by Rp 4,500,000 per child up to the third child.
+     * Jika pegawai belum menikah dan belum punya anak maka penghasilan tidak kena pajaknya adalah Rp 54.000.000.
+     * Jika pegawai sudah menikah maka penghasilan tidak kena pajaknya ditambah sebesar Rp 4.500.000.
+     * Jika pegawai sudah memiliki anak maka penghasilan tidak kena pajaknya ditambah sebesar Rp 4.500.000 per anak sampai anak ketiga.
      * 
      */
     
-    public static int calculateTax(TaxFunction taxFunction) {
+    public static int calculateTax(int monthlySalary, int otherMonthlyIncome, int numberOfMonthWorking, int deductible, boolean isMarried, int numberOfChildren) {
         int tax = 0;
         
-        if (taxFunction.getNumberOfMonthsWorking() > 12) {
-            System.err.println("More than 12 months working per year");
+        if (numberOfMonthWorking > MAX_MONTHS_WORKING) {
+            System.err.println("More than 12 month working per year");
         }
         
-        int numberOfChildren = taxFunction.getNumberOfChildren();
-        if (numberOfChildren > 3) {
-            numberOfChildren = 3;
+        if (numberOfChildren > MAX_CHILDREN_FOR_EXEMPTION) {
+            numberOfChildren = MAX_CHILDREN_FOR_EXEMPTION;
         }
         
-        int taxExemptAmount = 54000000;
-        if (taxFunction.isMarried()) {
-            taxExemptAmount += 4500000;
+        int taxExemptAmount = BASE_EXEMPTION_AMOUNT;
+        if (isMarried) {
+            taxExemptAmount += MARRIED_EXEMPTION_AMOUNT;
         }
-        taxExemptAmount += numberOfChildren * 1500000;
+        taxExemptAmount += numberOfChildren * PER_CHILD_EXEMPTION_AMOUNT;
 
-        tax = (int) Math.round(0.05 * (((taxFunction.getMonthlySalary() + taxFunction.getOtherMonthlyIncome()) * taxFunction.getNumberOfMonthsWorking()) - taxFunction.getDeductible() - taxExemptAmount));
+        tax = (int) Math.round(TAX_RATE * (((monthlySalary + otherMonthlyIncome) * numberOfMonthWorking) - deductible - taxExemptAmount));
         
         return Math.max(tax, 0); // Ensure tax is not negative
     }
+}
