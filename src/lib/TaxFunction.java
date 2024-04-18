@@ -14,14 +14,12 @@ public class TaxFunction {
      * Jika pegawai sudah menikah maka penghasilan tidak kena pajaknya ditambah sebesar Rp 4.500.000.
      * Jika pegawai sudah memiliki anak maka penghasilan tidak kena pajaknya ditambah sebesar Rp 4.500.000 per anak sampai anak ketiga.
      * 
+     * @throws IllegalArgumentException Jika jumlah bulan kerja melebihi 12 bulan.
      */
     
     public static int calculateTax(int monthlySalary, int otherMonthlyIncome, int numberOfMonthWorking, int deductible, boolean isMarried, int numberOfChildren) {
-        int tax = 0;
-        
         if (numberOfMonthWorking > MAX_MONTHS_WORKING) {
-            System.err.println("More than 12 month working per year");
-            return tax;
+            throw new IllegalArgumentException("More than 12 month working per year");
         }
         
         if (numberOfChildren > MAX_CHILDREN_FOR_EXEMPTION) {
@@ -33,7 +31,7 @@ public class TaxFunction {
         int totalIncome = (monthlySalary + otherMonthlyIncome) * numberOfMonthWorking;
         int taxableIncome = totalIncome - deductible - taxExemptAmount;
 
-        tax = (int) Math.round(0.05 * taxableIncome);
+        int tax = (int) Math.round(0.05 * taxableIncome);
         
         return Math.max(tax, 0); // Ensure tax is not negative
     }
